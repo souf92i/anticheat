@@ -26,7 +26,7 @@ Here's a list of handled cheats at the moment :
 And here's a list of things I highly recommend to edit in the include or to #undef and to re-define by yourself in your script.
 
 
- PING_LIMIT                     (500)               // Ping maximal avant d'être kick pour éviter les problèmes de latence
+PING_LIMIT                     (500)               // Ping maximal avant d'être kick pour éviter les problèmes de latence
  MAX_AFK_TIME                   (1200)              // Temps en seconde maximal d'AFK avant d'être kick pour éviter de surcharger le serveur
  MAX_PLAYER_HEALTH              (1000.0)            // Vie maximale que peut avoir un joueur sans se faire bannir (doit être différent de 100 et supérieur à 99). Utile dans le cas des aduty par exemple
  MAX_PLAYER_ARMOUR              (1000.0)            // Armure maximale que peut avoir un joueur sans se faire bannir (doit être différent de 100 et supérieur à 99). Utile dans le cas des aduty par exemple
