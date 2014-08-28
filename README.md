@@ -45,9 +45,9 @@ TogglePlayerSpectating(playerid, true);
 Special thanks
 --------------
 
-cessil : Anti cheat tips'n'tricks
-Kalcor : MapAndreas plugin
-Nicow, Emmet_, Wallegi, Alexis (Chipardeur), neloiw : Advices, help, tricks, testing
+1. cessil : Anti cheat tips'n'tricks
+2. Kalcor : MapAndreas plugin
+3. Nicow, Emmet_, Wallegi, Alexis (Chipardeur), neloiw : Advices, help, tricks, testing
 
 
 ## Original thread (in French)
