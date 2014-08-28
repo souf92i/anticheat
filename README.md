@@ -20,12 +20,12 @@ Download the whole source (*anticheat.inc* and the `php` directory). Put only th
 Issues
 ------
 
-### Solving an error 025: function heading differs from prototype about OnPlayerTakeDamage for those who use YSI
+#### Solving an error 025: function heading differs from prototype about OnPlayerTakeDamage for those who use YSI
 
 A fix has been released. You can find it here : http://forum.sa-mp.com/showthread.php?t=488198
 
 
-### Solving a warning 213: tag mismatch on TogglePlayerSpectating 
+#### Solving a warning 213: tag mismatch on TogglePlayerSpectating 
 
 It happens when you directly put the the "toggle" parameter as a decimal value (number) such as shown here :
 
