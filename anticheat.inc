@@ -69,18 +69,22 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
         EXPORTED
 *********************************/
 
-#define PING_LIMIT                     (500)               // Ping maximal avant d'Ãªtre kick pour Ã©viter les problÃ¨mes de latence
-#define MAX_AFK_TIME                   (1200)              // Temps en seconde maximal d'AFK avant d'Ãªtre kick pour Ã©viter de surcharger le serveur
-#define MAX_PLAYER_HEALTH              (1000.0)            // Vie maximale que peut avoir un joueur sans se faire bannir (doit Ãªtre diffÃ©rent de 100 et supÃ©rieur Ã  99). Utile dans le cas des aduty par exemple
-#define MAX_PLAYER_ARMOUR              (1000.0)            // Armure maximale que peut avoir un joueur sans se faire bannir (doit Ãªtre diffÃ©rent de 100 et supÃ©rieur Ã  99). Utile dans le cas des aduty par exemple
+#define PING_LIMIT                     (500)               // Ping maximal avant d'être kick pour éviter les problèmes de latence
+#define MAX_AFK_TIME                   (1200)              // Temps en seconde maximal d'AFK avant d'être kick pour éviter de surcharger le serveur
+#define MAX_PLAYER_HEALTH              (1000.0)            // Vie maximale que peut avoir un joueur sans se faire bannir (doit être différent de 100 et supérieur à 99). Utile dans le cas des aduty par exemple
+#define MAX_PLAYER_ARMOUR              (1000.0)            // Armure maximale que peut avoir un joueur sans se faire bannir (doit être différent de 100 et supérieur à 99). Utile dans le cas des aduty par exemple
 #define MAX_ATTEMPTS                   (3)                 // Nombre de secondes en unsynchro maximal avant de se faire timeout
 
 #if defined USE_COUNTRY_CHECKING
-    #define DEFAULT_COUNTRY_CHECKING   (QUERY_TYPE_CODE)   // Type de vÃ©rification Ã  effectuer sur l'IP (choisir une des deux vÃ©rifications de l'enum)
+    #define DEFAULT_COUNTRY_CHECKING   (QUERY_TYPE_CODE)   // Type de vérification à effectuer sur l'IP (choisir une des deux vérifications de l'enum)
 #endif
 
-#define CHEAT_SOBEIT                   (-2)                // Cheat ID -2 = Appel de la callback par le dÃ©tecteur de s0beit. C'est pas un cheat (mais un outil pour cheater), mais Ã§a rentre dans le cadre de la callback. [EXPERIMENTAL]
-#define CHEAT_AFK                      (-1)                // Cheat ID -1 = Appel de la callback par l'Anti AFK. Ce n'est pas un cheat mais je me voyais mal faire une callback pour Ã§a
+#if defined USE_ANTI_VPN || defined USE_COUNTRY_CHECKING
+    #define SERVER_URL                 ("s4t3kx.alwaysdata.net/")
+#endif
+
+#define CHEAT_SOBEIT                   (-2)                // Cheat ID -2 = Appel de la callback par le détecteur de s0beit. C'est pas un cheat (mais un outil pour cheater), mais ça rentre dans le cadre de la callback. [EXPERIMENTAL]
+#define CHEAT_AFK                      (-1)                // Cheat ID -1 = Appel de la callback par l'Anti AFK. Ce n'est pas un cheat mais je me voyais mal faire une callback pour ça
 #define CHEAT_MONEY                    (0)                 // Cheat ID 0 = Cheat argent
 #define CHEAT_WEAPON                   (1)                 // Cheat ID 1 = Cheat arme
 #define CHEAT_HEALTH                   (2)                 // Cheat ID 2 = Cheat vie
@@ -90,17 +94,17 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
 #define CHEAT_TUNING                   (6)                 // Cheat ID 6 = Cheat tuning
 #define CHEAT_INVULNERABLE             (7)                 // Cheat ID 7 = Cheat invulnerable
 #define CHEAT_FLY                      (8)                 // Cheat ID 8 = Cheat anti fly (quand la personne nage en l'air)
-#define CHEAT_AIRBREAK                 (9)                 // Cheat ID 9 = Cheat anti airbreak (anti gravitÃ©)
-#define CHEAT_SKYDIVING                (10)                // Cheat ID 10 = Cheat skydiving (chute du haut du ciel pour dÃ©placements plus rapides)
-#define CHEAT_TELEPORT_MAP             (11)                // Cheat ID 11 = Cheat teleport map (le joueur clique droit sur la carte et s'y tÃ©lÃ©porte)
-#define CHEAT_TELEPORT_VEH             (12)                // Cheat ID 12 = Cheat teleport veh (le joueur se tÃ©lÃ©porte dans un vÃ©hicule)
-#define CHEAT_REMOTE_JACKING           (13)                // Cheat ID 13 = Cheat remote jacking (le joueur se tÃ©lÃ©porte dans le veh d'un autre, fout le bordel avec et revient Ã  son ancienne place)
-#define CHEAT_UNREG_ANIM               (14)                // Cheat ID 14 = Cheat unregistrated animation (le joueur utilise un mod qui lui fournit des animations non natives et/ou non dÃ©tectables par SAMP)
+#define CHEAT_AIRBREAK                 (9)                 // Cheat ID 9 = Cheat anti airbreak (anti gravité)
+#define CHEAT_SKYDIVING                (10)                // Cheat ID 10 = Cheat skydiving (chute du haut du ciel pour déplacements plus rapides)
+#define CHEAT_TELEPORT_MAP             (11)                // Cheat ID 11 = Cheat teleport map (le joueur clique droit sur la carte et s'y téléporte)
+#define CHEAT_TELEPORT_VEH             (12)                // Cheat ID 12 = Cheat teleport veh (le joueur se téléporte dans un véhicule)
+#define CHEAT_REMOTE_JACKING           (13)                // Cheat ID 13 = Cheat remote jacking (le joueur se téléporte dans le veh d'un autre, fout le bordel avec et revient à son ancienne place)
+#define CHEAT_UNREG_ANIM               (14)                // Cheat ID 14 = Cheat unregistrated animation (le joueur utilise un mod qui lui fournit des animations non natives et/ou non détectables par SAMP)
 #define CHEAT_SPOOFED_WEAPON           (15)                // Cheat ID 15 = Cheat spoofed weapon (le joueur fait semblant de se faire tuer par une arme que le tueur n'a pas)
 #define CHEAT_FAKE_KILL                (16)                // Cheat ID 16 = Cheat fake kill (le joueur fait semblant de se faire tuer)
-#define CHEAT_SPECTATING               (17)                // Cheat ID 17 = Cheat spectating (le joueur se met Ã  spec les autres joueurs)
-#define CHEAT_JETPACK                  (18)                // Cheat ID 18 = Cheat jetpack (le joueur spawn un jetpack cheatÃ©, aucun risque de faux positif thÃ©orique)
-#define CHEAT_SPEEDHACK                (19)                // Cheat ID 19 = Cheat speedhack (le joueur utilise un cheat pour se dÃ©placer plus vite) [EXPERIMENTAL]
+#define CHEAT_SPECTATING               (17)                // Cheat ID 17 = Cheat spectating (le joueur se met à spec les autres joueurs)
+#define CHEAT_JETPACK                  (18)                // Cheat ID 18 = Cheat jetpack (le joueur spawn un jetpack cheaté, aucun risque de faux positif théorique)
+#define CHEAT_SPEEDHACK                (19)                // Cheat ID 19 = Cheat speedhack (le joueur utilise un cheat pour se déplacer plus vite) [EXPERIMENTAL]
 
 forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS RETOURNER 1
 
@@ -109,7 +113,7 @@ forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS 
 #endif
 
 #if defined USE_BADWORD
-    forward OnPlayerBadword(playerid, badword[]);   // Retourner Ã  cette callback ce que vous retourneriez Ã  OnPlayerText (0 ou 1)
+    forward OnPlayerBadword(playerid, badword[]);   // Retourner à cette callback ce que vous retourneriez à OnPlayerText (0 ou 1)
 #endif
 
 #if defined USE_COUNTRY_CHECKING
@@ -313,7 +317,10 @@ public OnPlayerText(playerid, text[])
             SetPVarString(playerid, "ip", ip_address);
             new buffer[19] = "ip=";
             memcpy(buffer, ip_address, 0, (strlen(ip_address)*4));
-            HTTP(playerid, HTTP_POST, "http://s4t3kx.alwaysdata.net/vpn.php", buffer, "OnVPNResponse");
+            new url[60];
+            strcat(url, SERVER_URL);
+            strcat(url, "vpn.php");
+            HTTP(playerid, HTTP_POST, url, buffer, "OnVPNResponse");
             return 1;
         #endif
     }
@@ -332,7 +339,7 @@ public OnPlayerText(playerid, text[])
     static OnVPNResponse(index, response, data[]);
     public OnVPNResponse(index, response, data[])
     {
-        if(response != 200) return printf("ProblÃ¨me de traitement de la base de donnÃ©e d'IPs [Code d'erreur : %d]", response), 1;
+        if(response != 200) return printf("Problème de traitement de la base de donnée d'IPs [Code d'erreur : %d]", response), 1;
         if(!strcmp(data, "entry", true))
         {
             new ip[16];
@@ -774,7 +781,10 @@ stock AC_PlayerSpectateVehicle(playerid, targetvehicleid, mode = SPECTATE_MODE_N
         strcat(buffer, "&ipv6=");
         format(buffer, sizeof(buffer), "%s%d", buffer, ipv6);
 
-        return HTTP(playerid, HTTP_POST, "http://s4t3kx.alwaysdata.net/geoip/_geoip.php", buffer, "OnGeoIPResponse");
+        new url[60];
+        strcat(url, SERVER_URL);
+        strcat(url, "geoip/_geoip.php");
+        return HTTP(playerid, HTTP_POST, url, buffer, "OnGeoIPResponse");
     }
 
     static OnGeoIPResponse(index, response, data[]);
