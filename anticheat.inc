@@ -630,7 +630,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
         return AC_OnPlayerTakeDamage(playerid, issuerid, amount, weaponid, bodypart);
     #else
         if(amount <= AC_PlayerInfo[playerid][pArmourNr]) AC_PlayerInfo[playerid][pArmourNr] -= amount, AC_waitForSync[playerid][0] = SetTimerEx("WaitForSync", PING_LIMIT*2, true, "ii", playerid, 0);
-        else AC_PlayerInfo[playerid][pHealthNr] -= amount, AC_waitForSync[playerid][1] = SetTimerEx("WaitForSync", 250, true, "ii", playerid, 1);
+        else AC_PlayerInfo[playerid][pHealthNr] -= amount, AC_waitForSync[playerid][1] = SetTimerEx("WaitForSync", PING_LIMIT*2, true, "ii", playerid, 1);
         return 1;
     #endif
 }
