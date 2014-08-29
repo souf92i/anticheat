@@ -8,6 +8,10 @@
 
 #define _ANTICHEAT_INCLUDED
 
+#if defined CHEAT_SOBEIT
+    #warning Sobeit detector was dropped since 29/08 update
+#endif
+
 
 /**********************************
         Initialization
@@ -39,7 +43,7 @@ enum AC_p
     bool:pJetpack,
     // Lordzy
     pLastShotTick,
-
+    pRapidFireWarnings,
 };
 
 enum AC_cInfo
@@ -246,7 +250,7 @@ public OnPlayerDeath(playerid, killerid, reason)
         new weapons[13], ammo, slot;
         slot = GetWeaponSlot(reason);
         for(new s = 0; s < 13; s++) GetPlayerWeaponData(killerid, s, weapons[s], ammo);
-        if(weapons[slot] != reason) CallRemoteFunction("OnPlayerCheat", "ii", CHEAT_SPOOFED_WEAPON);
+        if(weapons[slot] != reason) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_SPOOFED_WEAPON);
         AC_ResetPlayerWeapons(playerid);
         return 1;
     #endif
@@ -604,9 +608,9 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     new
         tick = GetTickCount();
 
-    if((((22 <= weaponid <= 27) || (29 <= weaponid <= 31)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 35)) || \
+    if(((((22 <= weaponid <= 27) || (29 <= weaponid <= 31)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 35)) || \
         (((weaponid == 28 || weaponid == 32)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 30)) || \
-        (((33 <= weaponid <= 34)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 500))) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_RAPID_FIRE);
+        (((33 <= weaponid <= 34)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 500))) && (++AC_PlayerInfo[playerid][pRapidFireWarnings] == 3)) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_RAPID_FIRE), AC_PlayerInfo[playerid][pRapidFireWarnings] = 0;
 
     AC_PlayerInfo[playerid][pLastShotTick] = tick;
     return true;
