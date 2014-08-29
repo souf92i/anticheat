@@ -37,6 +37,9 @@ enum AC_p
     bool:pDeathCount,
     bool:pSpectating,
     bool:pJetpack,
+    // Lordzy
+    pLastShotTick,
+
 };
 
 enum AC_cInfo
@@ -105,6 +108,7 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
 #define CHEAT_SPECTATING               (17)                // Cheat ID 17 = Cheat spectating (le joueur se met à spec les autres joueurs)
 #define CHEAT_JETPACK                  (18)                // Cheat ID 18 = Cheat jetpack (le joueur spawn un jetpack cheaté, aucun risque de faux positif théorique)
 #define CHEAT_SPEEDHACK                (19)                // Cheat ID 19 = Cheat speedhack (le joueur utilise un cheat pour se déplacer plus vite) [EXPERIMENTAL]
+#define CHEAT_RAPID_FIRE               (20)                // Cheat ID 20 = Cheat rapid fire (le joueur tire énormément de coups de feu en peu de temps)
 
 forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS RETOURNER 1
 
@@ -131,6 +135,11 @@ forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS 
             return AC_OnFilterScriptInit();
         #else
             MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
+            for(new i, j = GetMaxPlayers(); i< j; i++) 
+            {
+                if(!IsPlayerConnected(i)) continue;
+                AC_PlayerInfo[i][pLastShotTick] = 0;
+            }
             return true;
         #endif
     }
@@ -152,6 +161,11 @@ forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS 
             return AC_OnGameModeInit();
         #else
             MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
+            for(new i, j = GetMaxPlayers(); i< j; i++) 
+            {
+                if(!IsPlayerConnected(i)) continue;
+                AC_PlayerInfo[i][pLastShotTick] = 0;
+            }
             return true;
         #endif
     }
@@ -202,15 +216,9 @@ public OnPlayerConnect(playerid)
             Lookup_ip(playerid, DEFAULT_COUNTRY_CHECKING);
         #endif
 
-        // anti sobeit
-        TogglePlayerControllable(playerid, 0);
-        new Float:x, Float:z;
-        GetPlayerCameraFrontVector(playerid, x, x, z);
+        // Lordzy
 
-        #pragma unused x
-
-        if(z < 0.8) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_SOBEIT); // basic detection though, need to be far improved if possible
-        TogglePlayerControllable(playerid, 1);
+        AC_PlayerInfo[playerid][pLastShotTick] = 0;
         return  1;
     #endif
 }
@@ -591,6 +599,17 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
         new s = GetWeaponSlot(weaponid);
         AC_PlayerInfo[playerid][pAmmoNr][s]--;
     }
+
+    // Lordzy
+
+    new
+        tick = GetTickCount();
+
+    if((((22 <= weaponid <= 27) || (29 <= weaponid <= 31)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 35)) || \
+        (((weaponid == 28 || weaponid == 32)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 30)) || \
+        (((33 <= weaponid <= 34)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 500))) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_RAPID_FIRE);
+
+    AC_PlayerInfo[playerid][pLastShotTick] = tick;
     return true;
     #endif
 }
