@@ -86,7 +86,6 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
     #define SERVER_URL                 ("s4t3kx.alwaysdata.net/")
 #endif
 
-#define CHEAT_SOBEIT                   (-2)                // Cheat ID -2 = Appel de la callback par le détecteur de s0beit. C'est pas un cheat (mais un outil pour cheater), mais ça rentre dans le cadre de la callback. [EXPERIMENTAL]
 #define CHEAT_AFK                      (-1)                // Cheat ID -1 = Appel de la callback par l'Anti AFK. Ce n'est pas un cheat mais je me voyais mal faire une callback pour ça
 #define CHEAT_MONEY                    (0)                 // Cheat ID 0 = Cheat argent
 #define CHEAT_WEAPON                   (1)                 // Cheat ID 1 = Cheat arme
