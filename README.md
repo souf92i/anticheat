@@ -14,7 +14,7 @@ Download the *anticheat.inc* and move it to your `pawno/includes` folder. Rebuil
 
 #### With the php files
 
-Download the whole source (*anticheat.inc* and the `php` directory). Put only the **content** of the php directory (thus not directly the php folder, but the vpn.php AND the geoip folder) in a webspace. Edit the line 82 of the **anticheat.inc** and put your own domain name without the *http://* but with the final */*. Save the file. Then follow the instructions from the above part.
+Download the whole source (*anticheat.inc* and the `php` directory). Put only the **content** of the php directory (thus not directly the php folder, but the vpn.php AND the geoip folder) in a webspace. Edit the line 90 of the **anticheat.inc** and put your own domain name without the *http://* but with the final */*. Save the file. Then follow the instructions from the above part.
 
 
 Issues
