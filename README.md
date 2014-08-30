@@ -2,6 +2,7 @@ Anticheat include
 -----------------
 
 This is an anticheat system currently on alpha, developped by S4t3K. It handles also some interessant features such as **a badword detector**, **an Anti VPN** (working with a big list of "blacklisted" ips) and a **foreign country detector**.
+It's a public release under the MIT License : do whatever you want (edit, sell, hack, love) since you keep my credits on it.
 
 
 Setting up
