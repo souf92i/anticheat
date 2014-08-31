@@ -43,15 +43,17 @@ Here's a list of things that are actually detected by the anti-cheat. It also li
 #define CHEAT_SPOOFED_WEAPON           (15)                // Cheat ID 15 = Spoofed weapon cheat
 #define CHEAT_FAKE_KILL                (16)                // Cheat ID 16 = Fake kill cheat
 #define CHEAT_SPECTATING               (17)                // Cheat ID 17 = Spectating cheat (player spectates other players without being allowed by the script)
-#define CHEAT_JETPACK                  (18)                // Cheat ID 18 = Jetpack cheat (player **uses** a non-legit jetpack)
+#define CHEAT_JETPACK                  (18)                // Cheat ID 18 = Jetpack cheat (player uses a non-legit jetpack)
 #define CHEAT_SPEEDHACK                (19)                // Cheat ID 19 = Speedhack (player moves very faster) [EXPERIMENTAL]
 #define CHEAT_RAPID_FIRE               (20)                // Cheat ID 20 = Rapidfire cheat
 #define CHEAT_AIMBOT                   (21)                // Cheat ID 21 = Aimbot cheat
 </pre>
 
 When one of these cheats is detected, it calls the `OnPlayerCheat(playerid, cheatid)` callback.
-*playerid = the cheater id
-cheatid = the detected cheat id (use the macros)*
+<pre>
+playerid = the cheater id
+cheatid = the detected cheat id (use the macros)
+</pre>
 
 
 Things you should change
@@ -64,6 +66,8 @@ Things you should change
 #define MAX_PLAYER_ARMOUR              (1000.0)            // Maximal armour a player can have without being detected as cheater. MUST BE different from 100 and superior to 99. Useful for aduties.
 #define MAX_ATTEMPTS                   (2)                 // Maximal unsynchro time in seconds before being timed out.
 </pre>
+
+Edit those as much as you want, either directly in the include or by undefining it and redefining it in your script.
 
 Issues
 ------
