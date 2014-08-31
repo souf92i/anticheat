@@ -84,7 +84,7 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
 #define MAX_AFK_TIME                   (1200)              // Temps en seconde maximal d'AFK avant d'être kick pour éviter de surcharger le serveur
 #define MAX_PLAYER_HEALTH              (1000.0)            // Vie maximale que peut avoir un joueur sans se faire bannir (doit être différent de 100 et supérieur à 99). Utile dans le cas des aduty par exemple
 #define MAX_PLAYER_ARMOUR              (1000.0)            // Armure maximale que peut avoir un joueur sans se faire bannir (doit être différent de 100 et supérieur à 99). Utile dans le cas des aduty par exemple
-#define MAX_ATTEMPTS                   (3)                 // Nombre de secondes en unsynchro maximal avant de se faire timeout
+#define MAX_ATTEMPTS                   (2)                 // Nombre de secondes en unsynchro maximal avant de se faire timeout
 
 #if defined USE_COUNTRY_CHECKING
     #define DEFAULT_COUNTRY_CHECKING   (QUERY_TYPE_CODE)   // Type de vérification à effectuer sur l'IP (choisir une des deux vérifications de l'enum)
@@ -124,7 +124,7 @@ forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS 
     forward OnPlayerVPN(playerid, ip_address[]);
 #endif
 
-#if defined USE_BADWORD
+#if defined USE_BADWORD_DETECTION
     forward OnPlayerBadword(playerid, badword[]);   // Retourner à cette callback ce que vous retourneriez à OnPlayerText (0 ou 1)
 #endif
 
@@ -305,7 +305,7 @@ public OnPlayerText(playerid, text[])
         return AC_OnPlayerText(playerid, text);
     #else
         if(AC_PlayerInfo[playerid][pAFK] != -1) AC_PlayerInfo[playerid][pAFK] = -1;
-        #if defined USE_BADWORD
+        #if defined USE_BADWORD_DETECTION
             for(new i = 0; i < sizeof(AC_badwords); i++)
             {
                 if(strfind(text, AC_badwords[i], true) != -1) return CallRemoteFunction("OnPlayerBadword", "is", playerid, AC_badwords[i]);
