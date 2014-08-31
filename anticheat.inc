@@ -44,6 +44,10 @@ enum AC_p
     // Lordzy
     pLastShotTick,
     pRapidFireWarnings,
+    // Kyance
+    pAimWarnings,
+    bool:pAimCoolDown,
+    pToggleCoolDown,
 };
 
 enum AC_cInfo
@@ -62,7 +66,7 @@ enum AC_cInfo
 #endif
 
 new 
-    bool:AC_pAlive[MAX_PLAYERS];
+    bool:AC_pAlive[MAX_PLAYERS char];
 
 static
     AC_PlayerInfo[MAX_PLAYERS][AC_p],
@@ -112,6 +116,7 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
 #define CHEAT_JETPACK                  (18)                // Cheat ID 18 = Cheat jetpack (le joueur spawn un jetpack cheaté, aucun risque de faux positif théorique)
 #define CHEAT_SPEEDHACK                (19)                // Cheat ID 19 = Cheat speedhack (le joueur utilise un cheat pour se déplacer plus vite) [EXPERIMENTAL]
 #define CHEAT_RAPID_FIRE               (20)                // Cheat ID 20 = Cheat rapid fire (le joueur tire énormément de coups de feu en peu de temps)
+#define CHEAT_AIMBOT                   (21)                // Cheat ID 21 = Cheat aimbot (visée automatique)
 
 forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS RETOURNER 1
 
@@ -191,7 +196,7 @@ public OnPlayerSpawn(playerid)
     #if defined AC_OnPlayerSpawn
         return AC_OnPlayerSpawn(playerid);
     #else
-        AC_pAlive[playerid] = true;
+        AC_pAlive{playerid} = true;
         SetPlayerHealth(playerid, 99.0);
         return  1;
     #endif
@@ -212,7 +217,7 @@ public OnPlayerConnect(playerid)
         RemoveBuildingForPlayer(playerid, 1776, 0.0, 0.0, 0.0, 6000.0);
         RemoveBuildingForPlayer(playerid, 1977, 0.0, 0.0, 0.0, 6000.0);
 
-        AC_pAlive[playerid] = false;
+        AC_pAlive{playerid} = false;
         AC_ResetPlayerWeapons(playerid);
 
         #if defined USE_COUNTRY_CHECKING
@@ -231,7 +236,7 @@ public OnPlayerRequestClass(playerid, classid)
     #if defined AC_OnPlayerRequestClass
         return AC_OnPlayerRequestClass(playerid, classid);
     #else
-        AC_pAlive[playerid] = false;
+        AC_pAlive{playerid} = false;
         AC_PlayerInfo[playerid][pWeapons][AC_Classes[classid][weap1]] = true;
         AC_PlayerInfo[playerid][pWeapons][AC_Classes[classid][weap2]] = true;
         AC_PlayerInfo[playerid][pWeapons][AC_Classes[classid][weap3]] = true;
@@ -244,8 +249,8 @@ public OnPlayerDeath(playerid, killerid, reason)
     #if defined AC_OnPlayerDeath
         return AC_OnPlayerDeath(playerid, killerid, reason);
     #else
-        if(!AC_pAlive[playerid] && AC_PlayerInfo[playerid][pDeathCount]) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_FAKE_KILL);
-        AC_pAlive[playerid] = false;
+        if(!AC_pAlive{playerid} && AC_PlayerInfo[playerid][pDeathCount]) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_FAKE_KILL);
+        AC_pAlive{playerid} = false;
         if(!AC_PlayerInfo[playerid][pDeathCount]) AC_PlayerInfo[playerid][pDeathCount] = true;
         new weapons[13], ammo, slot;
         slot = GetWeaponSlot(reason);
@@ -613,7 +618,18 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
         (((33 <= weaponid <= 34)) && ((tick - AC_PlayerInfo[playerid][pLastShotTick]) < 500))) && (++AC_PlayerInfo[playerid][pRapidFireWarnings] == 3)) CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_RAPID_FIRE), AC_PlayerInfo[playerid][pRapidFireWarnings] = 0;
 
     AC_PlayerInfo[playerid][pLastShotTick] = tick;
-    return true;
+
+    // Kyance
+
+    new surf[2], Float:pkl[2], Float:vectors[6];
+    surf[0] = GetPlayerSurfingVehicleID(playerid), surf[1] = GetPlayerSurfingVehicleID(playerid);
+    pkl[0] = NetStats_PacketLossPercent(hitid), pkl[1] = NetStats_PacketLossPercent(playerid);
+    GetPlayerLastShotVectors(playerid, vectors[0], vectors[1], vectors[2], vectors[3], vectors[4], vectors[5]);
+
+    if((hittype == BULLET_HIT_TYPE_PLAYER) && (!IsPlayerNPC(hitid)) && ((AC_PlayerInfo[hitid][pLastUpdate] + 1 >= gettime()) && (!AC_PlayerInfo[playerid][pAimCoolDown])) && ((surf[0] == INVALID_VEHICLE_ID) && (surf[1] == INVALID_VEHICLE_ID) && (!IsPlayerInAnyVehicle(hitid))) && ((pkl[0] < 0.8) && (pkl[1] < 0.8)))
+        CheckForAimbot(playerid, vectors[3], vectors[4], vectors[5], hitid);
+
+    return true;                                                                                                                    
     #endif
 }
 
@@ -627,6 +643,8 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 #if defined AC_OnPlayerWeaponShot
     forward AC_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
 #endif
+
+
 
 /********************************************
             ANTI HEALTH/ARMOUR HACK
@@ -651,8 +669,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
     #if defined AC_OnPlayerTakeDamage
         return AC_OnPlayerTakeDamage(playerid, issuerid, amount, weaponid, bodypart);
     #else
+        // Anti invulnerable hack
         if(amount <= AC_PlayerInfo[playerid][pArmourNr]) AC_PlayerInfo[playerid][pArmourNr] -= amount, AC_waitForSync[playerid][0] = SetTimerEx("WaitForSync", PING_LIMIT*2, true, "ii", playerid, 0);
         else AC_PlayerInfo[playerid][pHealthNr] -= amount, AC_waitForSync[playerid][1] = SetTimerEx("WaitForSync", PING_LIMIT*2, true, "ii", playerid, 1);
+        
+        // Kyance
+
+        if((issuerid != INVALID_PLAYER_ID) && (!AC_PlayerInfo[playerid][pAimCoolDown]) && (AC_PlayerInfo[issuerid][pToggleCoolDown])) AC_PlayerInfo[playerid][pAimCoolDown] = true, SetTimerEx("ResetCoolDown", 2500, false, "ii", playerid, 0);
+
         return 1;
     #endif
 }
@@ -714,6 +738,24 @@ public WaitForSync(playerid, type)
         }
     }
 }
+
+/**************************************
+            ANTI AIMBOT
+            (Kyance)
+**************************************/
+
+static stock CheckForAimbot(playerid, Float:fX, Float:fY, Float:fZ, attacked = INVALID_PLAYER_ID)
+{
+    if((attacked != INVALID_PLAYER_ID) && (!IsPlayerInRangeOfPoint(attacked, 3.0, fX, fY, fZ)) && (++AC_PlayerInfo[playerid][pAimWarnings] == 3)) AC_PlayerInfo[playerid][pAimWarnings] = 0, CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_AIMBOT);
+}
+
+static ResetCoolDown(playerid, step);
+public ResetCoolDown(playerid, step)
+{
+    if(!step) return AC_PlayerInfo[playerid][pAimCoolDown] = false, SetTimerEx("ResetCoolDown", 3500, false, "ii", playerid, 1), 1;
+    return AC_PlayerInfo[playerid][pToggleCoolDown] = 1, 1;
+}
+
 
 /**************************************
             CHEAT CLICK MAP
@@ -1071,7 +1113,7 @@ public OnPlayerUpdate(playerid)
     if(time == AC_PlayerInfo[playerid][pLastUpdate]) return true;
 
     // Prevent fake checking
-    if(!AC_pAlive[playerid]) return true;
+    if(!AC_pAlive{playerid}) return true;
     if(GetPlayerPing(playerid) >= PING_LIMIT && ++AC_PlayerInfo[playerid][pLag] == MAX_ATTEMPTS) return Timeout(playerid);
     //if(!IsPlayerSynced(playerid)) return Timeout(playerid);
 
