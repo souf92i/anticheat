@@ -49,7 +49,8 @@ Special thanks
 1. cessil : Anti cheat tips'n'tricks
 2. Kalcor : MapAndreas plugin
 3. Lordzy : OnPlayerRapidFire (OPRF.inc)
-4. Nicow, Emmet_, Wallegi, Alexis (Chipardeur), neloiw : Advices, help, tricks, testing
+4. Kyance : Aimbot detector ("Silent" Aimbot detector)
+5. Nicow, Emmet_, Wallegi, Alexis (Chipardeur), neloiw : Advices, help, tricks, testing
 
 
 ## Original thread (in French)
