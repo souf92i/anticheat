@@ -69,6 +69,86 @@ Things you should change
 
 Edit those as much as you want, either directly in the include or by undefining it and redefining it in your script.
 
+
+Additionnal things
+------------------
+
+As stated before, the anti cheat also includes some features.
+
+#### Anti badword
+
+To use it, add this line **BEFORE** including the anti cheat :
+<pre>
+#define USE_BADWORD_DETECTION
+</pre>
+
+And create your own list of forbidden words using this model :
+
+<pre>
+stock const AC_badwords[][] =
+{
+    {"cheat"},
+    {"porn"},
+    {"hack"},
+    {"hacking"},
+    {"gay"}
+};
+</pre>
+
+Each time one of your "forbidden" words will be detected in direct chat (OnPlayerText), the callback `OnPlayerBadword(playerid, badword[])` will be called.
+<pre>
+playerid = the player who said the bad word
+badword[] = the badword who've been said
+</pre>
+
+#### Anti VPN
+
+To use it, add this line **BEFORE** including the anti cheat :
+<pre>
+#define USE_ANTI_VPN
+</pre>
+
+It works with a big list of VPN ips already known (and don't worry about any lag, it doesn't slow down/freeze the server), and each time a player will connect with one of these IPs, the callback `OnPlayerVPN(playerid, ip_address[])` will be called.
+<pre>
+playerid = the player who've connected under VPN
+ip_address[] = the VPN ip address
+</pre>
+
+*It doesn't kick/ban immediately because you can allow some players to connect under VPN if you want. If you have more VPNs IP that you want to add to the anti cheat for public use, simply give me them either through an issue or via private message on SAMP forums.*
+
+#### Anti foreign country
+
+To use it, add this line **BEFORE** including the anti cheat :
+<pre>
+#define USE_COUNTRY_CHECKING
+</pre>
+
+And define your own list of foreign countries using this model :
+
+<pre>
+stock const AC_allowed_countries[][][] = 
+{
+      {"France", "FR"}, // Name, country code
+      {"Canada", "CA"}, // Name, country code
+      {"Belgium", "BE"}, // Name, country code
+      {"Algeria", "DZ"}, // Name, country code
+      {"Morocco", "MO"}, // Name, country code
+      {"Tunisia", "TN"}    // Name, country code
+       
+};</pre>
+
+*This is a pre-made list for French servers. Note that the VPN detection (if you wanna use both the Anti VPN AND the foreign country checker) is made BEFORE the foreign country check. So don't worry of allowing a big amount of countries if you're afraid of some of the countries being a big VPN host.*
+
+Each time a player will connect your server with a foreign IP (foreign from your allowed countries list), the callback `OnPlayerForeignCountry(playerid, ip_address[], country[], query_type)` will be called.
+<pre>
+playerid = the "foreign" player id
+ip_address[] = the "foreign" ip address
+country[] = either the "foreign" country name or the "foreign" country code (depends of what query_type's value is)
+query_type = the type of query that was done. QUERY_TYPE_CODE will make "country" containing the country code of the foreign country (for example for United States, "US"). QUERY_TYPE_COUNTRY_NAME will make "country" containing the whole country name (for example for United States, "United States"). Check the "geoip" folder for more details.
+</pre>
+
+It doesn't kick/ban immediately for the same reasons as for the Anti VPN.
+
 Issues
 ------
 
@@ -102,8 +182,10 @@ Special thanks
 3. Kalcor : MapAndreas plugin
 4. Lordzy : OnPlayerRapidFire (OPRF.inc)
 5. Kyance : Aimbot detector ("Silent" Aimbot detector)
-6. Nicow, Emmet_, Wallegi, Alexis (Chipardeur), neloiw : Advices, help, tricks, testing
+6. Maxmind : GeoIP API 
+7. Nicow, Emmet_, Wallegi, Alexis (Chipardeur), neloiw : Advices, help, tricks, testing
 
+If you want to contribute to the anti cheat, just submit either an issue or a pull request.
 
 ## Original thread (in French)
 
