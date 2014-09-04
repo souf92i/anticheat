@@ -117,6 +117,7 @@ static stock const AC_magazines[] = {34, 17, 7, 1, 4, 7, 100, 30, 30, 50, 100, 1
 #define CHEAT_SPEEDHACK                (19)                // Cheat ID 19 = Cheat speedhack (le joueur utilise un cheat pour se déplacer plus vite) [EXPERIMENTAL]
 #define CHEAT_RAPID_FIRE               (20)                // Cheat ID 20 = Cheat rapid fire (le joueur tire énormément de coups de feu en peu de temps)
 #define CHEAT_AIMBOT                   (21)                // Cheat ID 21 = Cheat aimbot (visée automatique)
+#define CHEAT_BULLET_CRASHER           (22)                // Cheat ID 22 = Cheat bullet crasher (données invalides envoyées à OnPlayerWeaponShot, ce qui fait crash les joueurs alentours)
 
 forward OnPlayerCheat(playerid, cheatid);       // CETTE CALLBACK DOIT TOUJOURS RETOURNER 1
 
@@ -317,7 +318,6 @@ public OnPlayerText(playerid, text[])
                 if(count == 3) return CallRemoteFunction("OnPlayerBadword", "is", playerid, text);
             }
         #endif
-        return true;
     #endif
 }
 
@@ -355,7 +355,7 @@ public OnPlayerText(playerid, text[])
     static OnVPNResponse(index, response, data[]);
     public OnVPNResponse(index, response, data[])
     {
-        if(response != 200) return printf("Problème de traitement de la base de donnée d'IPs [Code d'erreur : %d]", response), 1;
+        if(response != 200) return printf("Problem while operating your request. [ERROR CODE : %d]", response), 1;
         if(!strcmp(data, "entry", true))
         {
             new ip[16];
@@ -629,6 +629,9 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     if((hittype == BULLET_HIT_TYPE_PLAYER) && (!IsPlayerNPC(hitid)) && ((AC_PlayerInfo[hitid][pLastUpdate] + 1 >= gettime()) && (!AC_PlayerInfo[playerid][pAimCoolDown])) && ((surf[0] == INVALID_VEHICLE_ID) && (surf[1] == INVALID_VEHICLE_ID) && (!IsPlayerInAnyVehicle(hitid))) && ((pkl[0] < 0.8) && (pkl[1] < 0.8)))
         CheckForAimbot(playerid, vectors[3], vectors[4], vectors[5], hitid);
 
+    if((hittype == BULLET_HIT_TYPE_PLAYER) && (!( 0 <= fX <= 20.0 ) || !( 0 <= fY <= 20.0 ) || !( 0 <= fZ <= 20.0 )))
+        return CallRemoteFunction("OnPlayerCheat", "ii", playerid, CHEAT_BULLET_CRASHER), 0;
+
     return true;                                                                                                                    
     #endif
 }
@@ -737,6 +740,21 @@ public WaitForSync(playerid, type)
             }
         }
     }
+}
+
+strfind_(string[], sub[], pos = 0)
+{
+    new l = strlen(string), ll = strlen(sub), bool:found = false;
+    for(new i = pos; i < l; ++i)
+    {
+        for(new j = 0; j < ll; ++j)
+        {
+            if(string[i+j] != sub[j]) break;
+            if(j == ll - 1) found = true;
+        }
+        if(found) return i;
+    }
+    return -1;
 }
 
 /**************************************
