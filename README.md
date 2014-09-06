@@ -138,6 +138,7 @@ stock const AC_allowed_countries[][][] =
 };</pre>
 
 *This is a pre-made list for French servers. Note that the VPN detection (if you wanna use both the Anti VPN AND the foreign country checker) is made BEFORE the foreign country check. So don't worry of allowing a big amount of countries if you're afraid of some of the countries being a big VPN host.*
+
 <br />
 <br />
 
